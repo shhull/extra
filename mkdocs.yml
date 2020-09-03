@@ -1,1 +1,8 @@
 site_name: openshift-ppc64le
+theme:
+  name: mkdocs
+  nav_style: dark
+nav:
+  - Home-grown: index.md
+  - Contribute: contrib.md
+  - External: actually-helped.md
