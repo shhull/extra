@@ -1,6 +1,14 @@
 #!/bin/sh
 # $1=local dir to share out, $2=IP address of NFS server
 
+# $1=zone name in firewall to allow NFS traffic through
+function allowNFStraffic() {
+	firewall-cmd --permanent --zone=$1 --add-service=nfs
+	firewall-cmd --permanent --zone=$1 --add-service=rpc-bind
+	firewall-cmd --permanent --zone=$1 --add-service=mountd
+	firewall-cmd --reload
+}
+
 LOCALDIR=$1
 if [ -z "$LOCALDIR" ]; then
 	echo "ERROR: No local dir to share specified -- aborting..."
@@ -45,10 +53,10 @@ if [ $? -ne 0 ]; then
 fi
 
 chmod -R 755 $LOCALDIR
-firewall-cmd --permanent --zone=public --add-service=nfs
-firewall-cmd --permanent --zone=public --add-service=rpc-bind
-firewall-cmd --permanent --zone=public --add-service=mountd
-firewall-cmd --reload
+
+for z in public libvirt; do
+	firewall-cmd --get-active-zones | grep -q "^$z\$" && allowNFStraffic $z
+done
 
 EXPORTS=/etc/exports
 grep -q "^$LOCALDIR " $EXPORTS
