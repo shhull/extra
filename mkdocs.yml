@@ -2,8 +2,9 @@ site_name: openshift-ppc64le
 theme:
   name: mkdocs
   nav_style: dark
+  navigation_depth: 3
 nav:
-  - Home-grown: index.md
+  - Home(grown): index.md
   - Contribute: contrib.md
   - External: actually-helped.md
 copyright: © Copyright IBM Corp. 2020
