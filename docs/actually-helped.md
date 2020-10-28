@@ -1,6 +1,14 @@
 Collection of issues we faced and external pages/links that actually helped resolve them;
 
+##### (2020-10-26 4.6 GA)
+
 ## 2020-10
+
+* Pods failing to start on a particular node, often with `ImagePullBackOff` error, due to getting CRI-O ephemeral storage full  
+  => <https://access.redhat.com/solutions/5350721>
+
+* How to troubleshoot ingress, routes, services, what objects to check, in what order (perhaps for likeliness/quicker resolution)  
+  => <https://kubernetes.io/docs/tasks/debug-application-cluster/debug-service/>
 
 * 4.5 disconnected cluster (ie. no direct access to Internet), normal upgrade fails, requiring "opting out Insights operator" and "mirroring image repository (again)." 
   `oc adm upgrade` first checks if the cluster is currently healthy, and any problem with cluster operators (`oc get co`) blocks upgrade operation from proceeding. 
