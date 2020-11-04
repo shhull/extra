@@ -1,22 +1,25 @@
-#  Resource-Exhaustion
-##  Introduction
+# Resource Exhaustion
+
+## Introduction
 As a developer or an Ops, you occasionally get into this situation where pods or API calls fail and resume working seemingly randomly.
 You might notice there are a lots of "Evicted" and/or "Pending" pods, or high restart counts on pods, or your `oc` commands take longer to respond or even fail sometimes, and everything seems to point to the system is busy, under heavy load too much stuff on it.
 This document explains how to verify, diagnose, and offer what could be done about this "resource exhaustion" 
 situation on an OpenShift cluster.
+
 ## How to verify this situation
 Resource exhaustion is the condition that happens when the resources required to execute an action are entirely or nearly expended, preventing that action from occurring.The most common outcome of resource exhaustion is denial of service.
 `oc adm top nodes` is one way to see how tight CPU and Memory resources are for the cluster nodes.
-#### Example output below :
+
+#### Example output below
 You will get to know about resource exhaustion condition using this command
-```
+```text
 $ oc adm top nodes
- NAME           CPU(cores)          CPU%               MEMORY(bytes)                MEMORY%\n
- node-1            297m              29%                4263Mi                        55%    
- node-0            55m               5%                 1201Mi                        15%    
- infra-1           85m               8%                 1319Mi                        17%    
- infra-0           182m              18%                2524Mi                        32%    
- master-0          178m              8%                 2584Mi                        16%    
+NAME           CPU(cores)          CPU%               MEMORY(bytes)                MEMORY%\n
+node-1            297m              29%                4263Mi                        55%    
+node-0            55m               5%                 1201Mi                        15%    
+infra-1           85m               8%                 1319Mi                        17%    
+infra-0           182m              18%                2524Mi                        32%    
+master-0          178m              8%                 2584Mi                        16%    
 ```
 Other indications that one could suspect of this situation are failing pods, especially in "Evicted" state.
 Use `oc get pods -A | egrep -v 'Completed|Running'` and see what and how many are failing. 
@@ -45,12 +48,12 @@ src="https://478h5m1yrfsa3bbe262u7muv-wpengine.netdna-ssl.com/wp-content/uploads
 ## Pod Eviction
 Pods could be evicted as part of kubelet's attempt to keep the node from going down completely. See sample messages below. 
 Example : 
-```
+```text
  Reason :  Evicted
  Warning : Evicted    125m  kubelet, worker-0.shivani4-9998.ocp-44.com  
  The node had condition:        [DiskPressure].
 ```
-```
+```text
  Reason :    Evicted
  Warning : Evicted  126m  kubelet, worker-0.shivani4-9998.ocp-44.com  
  The node was low on resource:   ephemeral-storage.
@@ -115,7 +118,7 @@ Kubernetes has guided tasks that one can follow along to understand how these se
 #### CPU
 To specify a CPU request and limit for a container,include following fields in the container resource manifest<br/>
 Example:
-```
+```text
 resources:
   limits:        
     cpu: "1"     
@@ -127,7 +130,7 @@ To know more in detail about allocation of cpu resources to containers and pods 
 #### Memory
 To specify a Memory request and limit for a container, include following fields in the container resource manifest<br/>
 Example:
-```
+```text
 resources:
    limits:       
      memory: "200Mi"    
@@ -177,8 +180,8 @@ This page describes how this all works in OpenShift clusters in more details:<br
   CPU and memory resources reserved for node components in OpenShift Container Platform are based on two node settings:
      - Kube-reserved
      - System-reserved
-  
-   If a flag is not set, it defaults to 0. If none of the flags are set, the allocated resource is set to the node’s capacity as it was before 
+
+    If a flag is not set, it defaults to 0. If none of the flags are set, the allocated resource is set to the node’s capacity as it was before 
    the  introduction of allocatable resources. 
    For further reading on managing node resources see<br/>
    <https://docs.openshift.com/container-platform/4.5/nodes/nodes/nodes-nodes-resources-configuring.htm>

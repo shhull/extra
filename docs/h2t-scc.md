@@ -4,7 +4,7 @@ This document contains information regarding troubleshooting SCC related issues.
 Document includes the initial diagnosis step which helps find the actual error.
 To solve the SCC related issues, you need a basic understanding of the SCC, and we will explain what SCC is along with its role in the cluster. 
 
-## Initial Diagnosis:
+## Initial Diagnosis
 
 * $ `oc describe pod <pod-name> | grep scc`
     This command show type of SCC used in the pod deployment. 
@@ -16,7 +16,7 @@ To solve the SCC related issues, you need a basic understanding of the SCC, and 
     The command output consists of permissions include actions that a pod, a collection of containers, can perform, and what resources it can access.
 
 
-### Sample Issue :
+### Sample Issue
 The pod was unable to mount the host volume due to user doesn't have right permissions.
 The error is pasted below. 
 
@@ -90,7 +90,7 @@ These groups are used for controlling access to shared storage.
 
 * Check the NFS mount using the following command.
  
-```
+```text
    # showmount -e <nfs-server-ip-or-hostname>
    Export list for f21-nfs.vm: 
    /opt/nfs * 
@@ -98,43 +98,41 @@ These groups are used for controlling access to shared storage.
 
 * Check NFS details on the mount server using the following command.
    
-```  
+```text
    # cat /etc/exports 
    /opt/nfs *(rw,sync,no_root_squash)
 ```
 
 * Check owner of exported directory
    
-```
+```text
    $ ls -lZ /opt/nfs -d
    drwxrws---. nfsnobody 2325 unconfined_u:object_r:usr_t:s0 /opt/nfs
-```
-
-```
+    
    $ id nfsnobody
    uid = 65534(nfsnobody) gid = 454265(nfsnobody) groups = 454265(nfsnobody)
 ```
 
 The `/opt/nfs/` export is accessible by UID 454265 and the group 2325.     
 
-    ```
-    apiVersion: v1
-    kind: Pod
-    ...
-    spec:
-       containers:
-       - name: ...
-          volumeMounts:
-          - name: nfs
-             mountPath: /usr/share/...
-       securityContext:
-          supplementalGroups: [2325]
-       volumes:
-       - name: nfs
-          nfs:
-          server: <nfs_server_ip_or_host>
-          path: /opt/nfs
-    ```
+```text
+apiVersion: v1
+kind: Pod
+...
+spec:
+   containers:
+   - name: ...
+      volumeMounts:
+      - name: nfs
+         mountPath: /usr/share/...
+   securityContext:
+      supplementalGroups: [2325]
+   volumes:
+   - name: nfs
+      nfs:
+      server: <nfs_server_ip_or_host>
+      path: /opt/nfs
+```
 
 ### 2. fsGroup
 
