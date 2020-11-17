@@ -3,6 +3,7 @@ theme:
   name: mkdocs
   nav_style: dark
   navigation_depth: 3
+  favicon: img/favicon.ico
 nav:
   - Home(grown): index.md
   - Contribute: contrib.md
