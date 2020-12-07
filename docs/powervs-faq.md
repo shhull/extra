@@ -18,6 +18,15 @@ Error: Error occured while fetching the auth key for power iaas: "Post https://i
 ```
 You may occasionally get this error upon `terraform apply` runs. One thing you can try is to regenerate IBM Cloud API key and rerun with it. See: <https://cloud.ibm.com/docs/account?topic=account-userapikey>
 
+#### Image Registry not coming up
+Toward the end of deploying a cluster or even after your `terraform apply` appears to complete happily, you might find your `image-registry` operator not AVAILABLE. Digging in, if you find the `registry-pvc` PersistentVolumeClaim stuck in Pending state, while `nfs-client-provisioner` pod appears to be Running fine, it may be the case where the backing NFS share is read-only, and thus PVCs can't be fulfilled. Check the directory ownership and permission of `/export` on your bastion node. It has to be owned by "nobody" and world writeable. Use below commands as necessary;
+```text
+# chown nobody:nobody /export
+# chmod 777 /export
+# exportfs -r
+```
+Note: allow a few minutes to sort all things out after these commands.
+
 ---
 ## Problems on a Running Cluster
 
