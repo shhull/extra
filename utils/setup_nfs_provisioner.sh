@@ -83,12 +83,12 @@ unzip -q $THEZIP
 
 cd external-storage-master/nfs-client/
 
-echo "INFO: generating deployment.yaml for ppc64le..."
+echo "INFO: generating deployment.yaml for s390x..."
 
 YQSCR=update_deployment.yaml
 echo "- command: update
   path: spec.template.spec.containers[0].image
-  value: docker.io/ibmcom/nfs-client-provisioner-ppc64le:latest
+  value: docker.io/ibmcom/nfs-client-provisioner-s390x:latest
 - command: update
   path: spec.template.spec.containers[0].env.(name==NFS_SERVER).value
   value: $SVRADDR
@@ -103,7 +103,7 @@ echo "- command: update
   value: $LOCALDIR
 " >$YQSCR
 
-DEPLYAML=deploy/deployment-ppc64le.yaml
+DEPLYAML=deploy/deployment-s390x.yaml
 yq write -s $YQSCR deploy/deployment.yaml > $DEPLYAML
 if [ $? -ne 0 -o ! -s $DEPLYAML ]; then
 	echo "ERROR: failed to update deployment.yaml -- aborting..."
