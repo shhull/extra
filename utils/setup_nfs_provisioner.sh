@@ -88,7 +88,7 @@ echo "INFO: generating deployment.yaml for s390x..."
 YQSCR=update_deployment.yaml
 echo "- command: update
   path: spec.template.spec.containers[0].image
-  value: docker.io/ibmcom/nfs-client-provisioner-s390x:latest
+  value: gcr.io/k8s-staging-sig-storage/nfs-subdir-external-provisioner:canary
 - command: update
   path: spec.template.spec.containers[0].env.(name==NFS_SERVER).value
   value: $SVRADDR
